@@ -86,8 +86,8 @@ Help users stay on top of deadlines by:
 
 > Build UI to show static list of deadlines.
 
-- [ ] Create `DeadlineTile` widget  
-- [ ] Display hardcoded sample tasks  
+- [x] Create `DeadlineTile` widget  
+- [x] Display hardcoded sample tasks  
 
 ### ✍️ Milestone 3: Add Task Form ⏳
 
