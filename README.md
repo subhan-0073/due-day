@@ -93,8 +93,8 @@ Help users stay on top of deadlines by:
 
 > Add screen to input task details.
 
-- [ ] Title input field and date picker  
-- [ ] Input validation  
+- [x] Title input field and date picker  
+- [x] Input validation  
 
 ### 🔄 Milestone 4: State Management & Add Tasks ⏳
 

@@ -1,4 +1,5 @@
 import 'package:dueday/src/models/task.dart';
+import 'package:dueday/src/ui/screens/add_task_screen.dart';
 import 'package:dueday/src/ui/widgets/deadline_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +24,15 @@ class HomeScreen extends StatelessWidget {
             return DeadlineTile(task: tasks[index]);
           },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddTaskScreen()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
