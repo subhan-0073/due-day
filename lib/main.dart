@@ -12,7 +12,7 @@ class DueDay extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: HomeScreen(),
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: Colors.red, useMaterial3: false),
       debugShowCheckedModeBanner: false,
     );
   }

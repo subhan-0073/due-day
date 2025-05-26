@@ -1,3 +1,4 @@
+import 'package:dueday/src/models/task.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -12,6 +13,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _title;
   DateTime? _selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,13 +62,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Please pick a due date')),
                     );
-
                     return;
                   }
                   _formKey.currentState!.save();
-                  print(_title);
-                  print(_selectedDate);
-                  Navigator.pop(context);
+                  Navigator.pop(
+                    context,
+                    Task(title: _title!, dueDate: _selectedDate!),
+                  );
                 }
               },
               child: const Text("Add Task"),

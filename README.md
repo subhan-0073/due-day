@@ -100,8 +100,8 @@ Help users stay on top of deadlines by:
 
 > Dynamically manage list when new task is added.
 
-- [ ] Use `setState` to update task list  
-- [ ] Navigate between form and home  
+- [x] Use `setState` to update task list  
+- [x] Navigate between form and home  
 
 ### 🗑 Milestone 5: Delete Functionality ⏳
 

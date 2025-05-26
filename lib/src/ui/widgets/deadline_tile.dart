@@ -1,5 +1,6 @@
 import 'package:dueday/src/models/task.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DeadlineTile extends StatelessWidget {
   final Task task;
@@ -18,14 +19,30 @@ class DeadlineTile extends StatelessWidget {
     }
   }
 
+  Color getCountdownColor() {
+    final now = DateTime.now();
+    final difference = task.dueDate.difference(now).inDays;
+
+    if (difference == 0) {
+      return Colors.orange;
+    } else if (difference > 0) {
+      return Colors.green;
+    } else {
+      return Colors.red;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final formattedDate = DateFormat('d MMMM y').format(task.dueDate);
+
     return ListTile(
       title: Text(task.title),
-      subtitle: Text(getCountdownText()),
-      trailing: Text(
-        '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}',
+      subtitle: Text(
+        getCountdownText(),
+        style: TextStyle(color: getCountdownColor()),
       ),
+      trailing: Text(formattedDate),
     );
   }
 }
