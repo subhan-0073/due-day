@@ -82,33 +82,40 @@ Help users stay on top of deadlines by:
 - [x] Flutter project created (`flutter create due_day`)  
 - [x] Basic `main.dart` and home screen scaffold  
 
-### 🏠 Milestone 2: Home Screen & Static List ⏳
+### 🏠 Milestone 2: Home Screen & Static List ✅
 
 > Build UI to show static list of deadlines.
 
 - [x] Create `DeadlineTile` widget  
 - [x] Display hardcoded sample tasks  
 
-### ✍️ Milestone 3: Add Task Form ⏳
+### ✍️ Milestone 3: Add Task Form ✅
 
 > Add screen to input task details.
 
 - [x] Title input field and date picker  
 - [x] Input validation  
 
-### 🔄 Milestone 4: State Management & Add Tasks ⏳
+### 🔄 Milestone 4: State Management & Add Tasks ✅
 
 > Dynamically manage list when new task is added.
 
 - [x] Use `setState` to update task list  
 - [x] Navigate between form and home  
 
-### 🗑 Milestone 5: Delete Functionality ⏳
+### 🗑 Milestone 5: Task Actions(Edit / Mark as Done / Delete) ✅
 
-> Allow user to delete tasks.
+> Allow users to manage tasks using swipe and long press gesture.
 
-- [ ] Long press or swipe to delete  
-- [ ] Update list in real-time  
+- [x] Swipe right → Edit task  
+- [x] Swipe left → Toggle done / not done  
+- [x] Long press → Show options dialog:
+  - [x] Edit Task  
+  - [x] Mark as Done / Not Done  
+  - [x] Delete Task with confirmation  
+  - [x] Undo deletion via SnackBar  
+- [x] View all tasks sorted by soonest deadline
+- [x] Sorting applied whenever tasks list changes to ensure proper order
 
 ### 💾 Milestone 6: Local Persistence (Optional) ⏳
 

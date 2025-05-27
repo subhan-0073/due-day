@@ -2,7 +2,8 @@ import 'package:dueday/src/models/task.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  final Task? task;
+  const AddTaskScreen({this.task, super.key});
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -15,9 +16,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   DateTime? _selectedDate;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.task != null) {
+      _titleController.text = widget.task!.title;
+      _selectedDate = widget.task!.dueDate;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Task"), centerTitle: true),
+      appBar: AppBar(
+        title: widget.task == null ? Text("Add Task") : Text("Edit Task"),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -67,11 +81,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   _formKey.currentState!.save();
                   Navigator.pop(
                     context,
-                    Task(title: _title!, dueDate: _selectedDate!),
+                    Task(
+                      title: _title!,
+                      dueDate: _selectedDate!,
+                      id: widget.task?.id,
+                    ),
                   );
                 }
               },
-              child: const Text("Add Task"),
+              child: widget.task == null
+                  ? const Text("Add Task")
+                  : const Text("Save Changes"),
             ),
           ],
         ),

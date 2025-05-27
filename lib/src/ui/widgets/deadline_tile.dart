@@ -37,7 +37,15 @@ class DeadlineTile extends StatelessWidget {
     final formattedDate = DateFormat('d MMMM y').format(task.dueDate);
 
     return ListTile(
-      title: Text(task.title),
+      title: Text(
+        task.title,
+        style: TextStyle(
+          decoration: task.isDone
+              ? TextDecoration.lineThrough
+              : TextDecoration.none,
+          color: task.isDone ? Colors.grey : Colors.black,
+        ),
+      ),
       subtitle: Text(
         getCountdownText(),
         style: TextStyle(color: getCountdownColor()),
