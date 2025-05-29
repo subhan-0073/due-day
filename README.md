@@ -117,12 +117,12 @@ Help users stay on top of deadlines by:
 - [x] View all tasks sorted by soonest deadline
 - [x] Sorting applied whenever tasks list changes to ensure proper order
 
-### 💾 Milestone 6: Local Persistence (Optional) ⏳
+### 💾 Milestone 6: Local Persistence ✅
 
 > Save tasks locally between app launches.
 
-- [ ] Integrate Hive or SharedPreferences  
-- [ ] Load saved tasks at startup  
+- [x] Integrate Hive  
+- [x] Load saved tasks at startup  
 
 ### 🔔 Milestone 7: Notifications (Optional) ⏳
 

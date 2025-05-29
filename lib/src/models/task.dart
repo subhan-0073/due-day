@@ -1,10 +1,20 @@
+import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-class Task {
+part 'task.g.dart';
+
+@HiveType(typeId: 0)
+class Task extends HiveObject {
+  @HiveField(0)
   final String id;
+  @HiveField(1)
   final String title;
+  @HiveField(2)
   final DateTime dueDate;
+  @HiveField(3)
   final String? category;
+
+  @HiveField(4)
   bool isDone;
   Task({
     String? id,
