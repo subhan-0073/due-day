@@ -22,5 +22,5 @@ class Task extends HiveObject {
     required this.dueDate,
     this.category,
     this.isDone = false,
-  }) : id = id ?? Uuid().v4();
+  }) : id = id ?? const Uuid().v4();
 }

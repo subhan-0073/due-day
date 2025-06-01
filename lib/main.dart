@@ -1,5 +1,6 @@
 import 'package:dueday/src/models/task.dart';
 import 'package:dueday/src/ui/screens/home_screen.dart';
+import 'package:dueday/src/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,11 +19,9 @@ class DueDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(),
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
-      ),
+      home: const HomeScreen(),
+      theme: darkTheme,
+      themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
     );
   }

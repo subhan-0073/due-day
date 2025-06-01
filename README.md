@@ -124,20 +124,22 @@ Help users stay on top of deadlines by:
 - [x] Integrate Hive  
 - [x] Load saved tasks at startup  
 
-### 🔔 Milestone 7: Notifications (Optional) ⏳
+### 🎨 Milestone 7: UI Polish & UX Refinement ✅
+
+> Finalize all UI layouts, styling, and user experience improvements for the entire app.
+
+- [x] Color-code task statuses: overdue (red), due soon (yellow/orange), completed (teal), pending  
+- [x] Update swipe icons, action texts, and UI elements (dates, status labels, dialogs, buttons, inputs) to ensure consistent theme colors and styling
+- [x] Apply responsive padding and margins across all screens
+- [x] Maintain accessible font sizes, contrasts, and overall visual consistency for smooth UX
+
+### 🔔 Milestone 8: Notifications (Optional) ⏳
 
 > Remind users about tasks due today.
 
 - [ ] Add flutter_local_notifications package  
 - [ ] Schedule daily reminders for due tasks  
 - [ ] Open app on notification tap (optional)  
-
-### 🎨 Milestone 8: UI Polish & UX Improvements ⏳
-
-> Make UI responsive and visually refined.
-
-- [ ] Add color-coding for overdue tasks  
-- [ ] Ensure mobile responsiveness and smooth UX  
 
 ---
 
