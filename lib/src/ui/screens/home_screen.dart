@@ -81,8 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _markAsDone(Task task) {
-    task.isDone = !task.isDone;
-    task.save();
+    setState(() {
+      task.isDone = !task.isDone;
+      task.save();
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Task marked as ${task.isDone ? "done" : "not done"}"),

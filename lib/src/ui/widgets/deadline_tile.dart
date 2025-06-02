@@ -7,12 +7,11 @@ class DeadlineTile extends StatelessWidget {
   final Task task;
   const DeadlineTile({required this.task, super.key});
 
-  String getCountdownText(DateTime dueDate) {
+  String getCountdownText() {
     final now = DateTime.now();
-    Duration difference = dueDate.difference(now);
+    Duration difference = task.dueDate.difference(now);
     int totalDays = difference.inDays;
     final absDays = totalDays.abs();
-
     if (totalDays == 0) return 'Due Today';
     int years = absDays ~/ 365;
     int months = (absDays % 365) ~/ 30;
@@ -31,13 +30,13 @@ class DeadlineTile extends StatelessWidget {
     return totalDays > 0 ? 'Due in $timeString' : 'Overdue by $timeString';
   }
 
-  Color getTileBackgroundColor(DateTime dueDate) {
+  Color getTileBackgroundColor() {
     {
       if (task.isDone) return Colors.grey.shade800.withAlpha(40);
     }
 
     final now = DateTime.now();
-    final diffDays = dueDate.difference(now).inDays;
+    final diffDays = task.dueDate.difference(now).inDays;
     if (diffDays < 0) {
       return Colors.red.shade900.withAlpha(38);
     } else if (diffDays == 0) {
@@ -73,7 +72,7 @@ class DeadlineTile extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: getTileBackgroundColor(task.dueDate),
+          color: getTileBackgroundColor(),
           borderRadius: BorderRadius.circular(16),
         ),
         padding: const EdgeInsets.all(AppPadding.all),
@@ -138,13 +137,15 @@ class DeadlineTile extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              getCountdownText(task.dueDate),
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: getCountdownColor(),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            task.isDone
+                ? const SizedBox.shrink()
+                : Text(
+                    getCountdownText(),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: getCountdownColor(),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
           ],
         ),
       ),
