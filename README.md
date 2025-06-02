@@ -133,7 +133,16 @@ Help users stay on top of deadlines by:
 - [x] Apply responsive padding and margins across all screens
 - [x] Maintain accessible font sizes, contrasts, and overall visual consistency for smooth UX
 
-### 🔔 Milestone 8: Notifications (Optional) ⏳
+### 🎨 Milestone 8: Sort & Filter Features with Bottom Sheet UI ✅
+
+> Complete task sorting and filtering with interactive bottom sheet components for efficient task organization.
+
+- [x] Place sort and filter chips prominently with polished UI
+- [x] Update swipe icons, action texts, and UI elements (dates, status labels, dialogs, buttons, inputs) to ensure consistent theme colors and styling
+- [x] Link user selections to app state for dynamic task list updates
+- [x] Maintain accessible font sizes, contrasts, and overall visual consistency for smooth UX
+
+### 🔔 Milestone 9: Notifications (Optional) ⏳
 
 > Remind users about tasks due today.
 

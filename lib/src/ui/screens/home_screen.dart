@@ -1,6 +1,9 @@
 import 'package:dueday/src/models/task.dart';
+import 'package:dueday/src/models/task_filter_sort.dart';
 import 'package:dueday/src/ui/screens/add_task_screen.dart';
 import 'package:dueday/src/ui/widgets/deadline_tile.dart';
+import 'package:dueday/src/ui/widgets/sort_chip.dart';
+import 'package:dueday/src/ui/widgets/task_filter_chips.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -13,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Box<Task>? box;
+  TaskFilter _currentFilter = TaskFilter.all;
+  TaskSort _currentSort = TaskSort.dueDateAsc;
 
   @override
   void initState() {
@@ -113,6 +118,51 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  List<Task> _filterTasks(List<Task> tasks) {
+    switch (_currentFilter) {
+      case TaskFilter.active:
+        return tasks.where((task) => !task.isDone).toList();
+      case TaskFilter.completed:
+        return tasks.where((task) => task.isDone).toList();
+      case TaskFilter.all:
+        return tasks;
+    }
+  }
+
+  List<Task> _sortTasks(List<Task> tasks) {
+    switch (_currentSort) {
+      case TaskSort.dueDateAsc:
+        tasks.sort((a, b) => a.dueDate.compareTo(b.dueDate));
+        break;
+      case TaskSort.dueDateDesc:
+        tasks.sort((a, b) => b.dueDate.compareTo(a.dueDate));
+        break;
+      case TaskSort.titleAsc:
+        tasks.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      case TaskSort.titleDesc:
+        tasks.sort((a, b) => b.title.compareTo(a.title));
+        break;
+    }
+
+    tasks.sort((a, b) {
+      if (a.isDone == b.isDone) return 0;
+      return a.isDone ? 1 : -1;
+    });
+    return tasks;
+  }
+
+  String _getEmptyMessage(TaskFilter filter) {
+    switch (filter) {
+      case TaskFilter.active:
+        return "No active tasks right now";
+      case TaskFilter.completed:
+        return "No completed tasks yet";
+      case TaskFilter.all:
+        return "No tasks yet";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (box == null) {
@@ -126,201 +176,254 @@ class _HomeScreenState extends State<HomeScreen> {
         valueListenable: box!.listenable(),
         builder: (context, Box<Task> box, _) {
           final deadlines = box.values.toList();
+          final filteredTasks = _filterTasks(deadlines);
+          final sortedTasks = _sortTasks(filteredTasks);
 
-          if (deadlines.isEmpty) {
-            return const Center(child: Text("No tasks yet"));
-          }
-
-          return ListView.builder(
-            itemCount: deadlines.length,
-            itemBuilder: (context, index) {
-              final task = deadlines[index];
-
-              return Dismissible(
-                key: Key(task.id),
-                confirmDismiss: (direction) async {
-                  if (direction == DismissDirection.startToEnd) {
-                    _editTask(task); //swipe right
-                    return false;
-                  } else {
-                    _markAsDone(task); //swipe left
-                    return false;
-                  }
-                },
-                background: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 20),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.edit, color: Colors.white),
-                      SizedBox(width: 8),
-                      Text(
-                        "Edit",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsetsGeometry.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
-                secondaryBackground: Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 20),
 
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        task.isDone ? "Undo" : "Done",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Icon(
-                        task.isDone ? Icons.undo : Icons.check,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 4),
+                    SortChip(
+                      currentSort: _currentSort,
+                      onSortChanged: (newSort) {
+                        setState(() {
+                          _currentSort = newSort;
+                        });
+                      },
+                    ),
+                    const SizedBox(width: 12),
+                    TaskFilterChips(
+                      currentFilter: _currentFilter,
+                      onFilterChanged: (newFilter) {
+                        setState(() {
+                          _currentFilter = newFilter;
+                        });
+                      },
+                    ),
+                  ],
                 ),
-                child: GestureDetector(
-                  onLongPress: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return SimpleDialog(
-                          backgroundColor: const Color(0xFF1E1E1E),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadiusGeometry.circular(16),
-                          ),
+              ),
+              Expanded(
+                child: sortedTasks.isEmpty
+                    ? Center(child: Text(_getEmptyMessage(_currentFilter)))
+                    : ListView.builder(
+                        itemCount: sortedTasks.length,
+                        itemBuilder: (context, index) {
+                          final task = sortedTasks[index];
 
-                          title: const Text(
-                            "Task options",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          children: [
-                            SimpleDialogOption(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _editTask(task);
-                              },
+                          return Dismissible(
+                            key: Key(task.id),
+                            confirmDismiss: (direction) async {
+                              if (direction == DismissDirection.startToEnd) {
+                                _editTask(task); //swipe right
+                                return false;
+                              } else {
+                                _markAsDone(task); //swipe left
+                                return false;
+                              }
+                            },
+                            background: Container(
+                              alignment: Alignment.centerLeft,
+                              padding: const EdgeInsets.only(left: 20),
                               child: const Row(
                                 children: [
-                                  Icon(Icons.edit, color: Colors.tealAccent),
+                                  Icon(Icons.edit, color: Colors.white),
                                   SizedBox(width: 8),
                                   Text(
-                                    'Edit task',
+                                    "Edit",
                                     style: TextStyle(
-                                      color: Colors.tealAccent,
-                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            SimpleDialogOption(
+                            secondaryBackground: Container(
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Icon(
-                                    task.isDone ? Icons.undo : Icons.check,
-                                    color: Colors.tealAccent,
+                                  Text(
+                                    task.isDone ? "Undo" : "Done",
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   const SizedBox(width: 8),
-                                  Text(
-                                    task.isDone
-                                        ? "Mark as not done"
-                                        : "Mark as done",
-                                    style: const TextStyle(
-                                      color: Colors.tealAccent,
-                                      fontSize: 16,
-                                    ),
+                                  Icon(
+                                    task.isDone ? Icons.undo : Icons.check,
+                                    color: Colors.white,
                                   ),
                                 ],
                               ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                _markAsDone(task);
-                              },
                             ),
-                            SimpleDialogOption(
-                              child: const Row(
-                                children: [
-                                  Icon(Icons.delete, color: Colors.redAccent),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Delete Task',
-                                    style: TextStyle(
-                                      color: Colors.redAccent,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
+                            child: GestureDetector(
+                              onLongPress: () {
                                 showDialog(
                                   context: context,
-                                  builder: (context) => AlertDialog(
-                                    backgroundColor: const Color(0xFF292929),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadiusGeometry.circular(16),
-                                    ),
+                                  builder: (context) {
+                                    return SimpleDialog(
+                                      backgroundColor: const Color(0xFF1E1E1E),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadiusGeometry.circular(16),
+                                      ),
 
-                                    title: const Text(
-                                      "Confirm Deletion",
-                                      style: TextStyle(
-                                        color: Colors.redAccent,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    content: const Text(
-                                      "Are you sure you want to delete this task?",
-                                      style: TextStyle(color: Colors.white70),
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text(
-                                          "Cancel",
-                                          style: TextStyle(
-                                            color: Colors.tealAccent,
-                                          ),
+                                      title: const Text(
+                                        "Task options",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
                                         ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          _deleteTask(task);
-                                        },
-                                        child: const Text(
-                                          "Delete",
-                                          style: TextStyle(
-                                            color: Colors.redAccent,
+                                      children: [
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            _editTask(task);
+                                          },
+                                          child: const Row(
+                                            children: [
+                                              Icon(
+                                                Icons.edit,
+                                                color: Colors.tealAccent,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                'Edit task',
+                                                style: TextStyle(
+                                                  color: Colors.tealAccent,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
+                                        SimpleDialogOption(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                task.isDone
+                                                    ? Icons.undo
+                                                    : Icons.check,
+                                                color: Colors.tealAccent,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                task.isDone
+                                                    ? "Mark as not done"
+                                                    : "Mark as done",
+                                                style: const TextStyle(
+                                                  color: Colors.tealAccent,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            _markAsDone(task);
+                                          },
+                                        ),
+                                        SimpleDialogOption(
+                                          child: const Row(
+                                            children: [
+                                              Icon(
+                                                Icons.delete,
+                                                color: Colors.redAccent,
+                                              ),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                'Delete Task',
+                                                style: TextStyle(
+                                                  color: Colors.redAccent,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                backgroundColor: const Color(
+                                                  0xFF292929,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadiusGeometry.circular(
+                                                        16,
+                                                      ),
+                                                ),
+
+                                                title: const Text(
+                                                  "Confirm Deletion",
+                                                  style: TextStyle(
+                                                    color: Colors.redAccent,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                content: const Text(
+                                                  "Are you sure you want to delete this task?",
+                                                  style: TextStyle(
+                                                    color: Colors.white70,
+                                                  ),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: const Text(
+                                                      "Cancel",
+                                                      style: TextStyle(
+                                                        color:
+                                                            Colors.tealAccent,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      _deleteTask(task);
+                                                    },
+                                                    child: const Text(
+                                                      "Delete",
+                                                      style: TextStyle(
+                                                        color: Colors.redAccent,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
+                              child: DeadlineTile(task: task),
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  child: DeadlineTile(task: task),
-                ),
-              );
-            },
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
       ),
