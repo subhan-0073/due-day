@@ -1,4 +1,6 @@
+import 'package:dueday/src/models/notification_settings.dart';
 import 'package:dueday/src/models/task.dart';
+import 'package:dueday/src/services/notification_service.dart';
 import 'package:dueday/src/ui/screens/home_screen.dart';
 import 'package:dueday/src/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +8,17 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(TaskAdapter());
 
+  await Hive.initFlutter();
+
+  Hive.registerAdapter(NotificationSettingsAdapter());
+  await Hive.openBox<NotificationSettings>('notificationSettingsBox');
+
+  Hive.registerAdapter(TaskAdapter());
   await Hive.openBox<Task>('tasksBox');
+
+  await NotificationService.init();
+
   runApp(const DueDay());
 }
 

@@ -1,7 +1,10 @@
 import 'package:dueday/src/models/task.dart';
 import 'package:dueday/src/models/task_filter_sort.dart';
+import 'package:dueday/src/services/notification_scheduler.dart';
+import 'package:dueday/src/services/notification_settings_service.dart';
 import 'package:dueday/src/ui/screens/add_task_screen.dart';
 import 'package:dueday/src/ui/widgets/deadline_tile.dart';
+import 'package:dueday/src/ui/widgets/notification_setup_dialog.dart';
 import 'package:dueday/src/ui/widgets/sort_chip.dart';
 import 'package:dueday/src/ui/widgets/task_filter_chips.dart';
 import 'package:flutter/material.dart';
@@ -23,45 +26,49 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _openBox();
+
+    if (NotificationSettingsService.isNotificationEnabled() == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (context) => const NotificationSetupDialog(),
+        );
+      });
+    }
+  }
+
+  Future<void> _scheduledNotificationsForToday() async {
+    final now = DateTime.now();
+    final dueTodayTitles =
+        box?.values
+            .where(
+              (task) =>
+                  !task.isDone &&
+                  task.dueDate.year == now.year &&
+                  task.dueDate.month == now.month &&
+                  task.dueDate.day == now.day,
+            )
+            .map((task) => task.title)
+            .toList() ??
+        [];
+
+    await NotificationScheduler.scheduleDailyMidnightNotification(
+      dueTodayTitles,
+    );
   }
 
   Future<void> _openBox() async {
-    box = await Hive.openBox('tasksBox');
-    if (box!.isEmpty) {
-      final now = DateTime.now();
+    box = Hive.box('tasksBox');
 
-      final dummyTasks = [
-        Task(
-          title: 'Buy groceries',
-          dueDate: now.subtract(const Duration(days: 642)),
-          isDone: false,
-        ),
-        Task(
-          title: 'Submit assignment',
-          dueDate: now.add(const Duration(days: 7)),
-          isDone: false,
-        ),
-        Task(
-          title: 'Doctor Appointment',
-          dueDate: now.add(const Duration(days: -1)),
+    await _scheduledNotificationsForToday();
 
-          isDone: true,
-        ),
-        Task(
-          title: 'Buyasf groceries',
-          dueDate: now.add(const Duration(days: 40)),
-          isDone: false,
-        ),
-      ];
-
-      for (var task in dummyTasks) {
-        await box!.add(task);
-      }
-    }
+    box!.listenable().addListener(() async {
+      await _scheduledNotificationsForToday();
+    });
     setState(() {});
   }
 
-  Future<void> _editTask(task) async {
+  Future<void> _editTask(Task task) async {
     final updatedTask = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -130,25 +137,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Task> _sortTasks(List<Task> tasks) {
-    switch (_currentSort) {
-      case TaskSort.dueDateAsc:
-        tasks.sort((a, b) => a.dueDate.compareTo(b.dueDate));
-        break;
-      case TaskSort.dueDateDesc:
-        tasks.sort((a, b) => b.dueDate.compareTo(a.dueDate));
-        break;
-      case TaskSort.titleAsc:
-        tasks.sort((a, b) => a.title.compareTo(b.title));
-        break;
-      case TaskSort.titleDesc:
-        tasks.sort((a, b) => b.title.compareTo(a.title));
-        break;
-    }
-
     tasks.sort((a, b) {
-      if (a.isDone == b.isDone) return 0;
-      return a.isDone ? 1 : -1;
+      if (a.isDone != b.isDone) return a.isDone ? 1 : -1;
+
+      switch (_currentSort) {
+        case TaskSort.dueDateAsc:
+          return a.dueDate.compareTo(b.dueDate);
+        case TaskSort.dueDateDesc:
+          return b.dueDate.compareTo(a.dueDate);
+        case TaskSort.titleAsc:
+          return a.title.compareTo(b.title);
+        case TaskSort.titleDesc:
+          return b.title.compareTo(a.title);
+      }
     });
+
     return tasks;
   }
 
@@ -182,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsetsGeometry.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
                 ),

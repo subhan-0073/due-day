@@ -133,22 +133,26 @@ Help users stay on top of deadlines by:
 - [x] Apply responsive padding and margins across all screens
 - [x] Maintain accessible font sizes, contrasts, and overall visual consistency for smooth UX
 
-### 🎨 Milestone 8: Sort & Filter Features with Bottom Sheet UI ✅
+### 🔍 Milestone 8: Sort & Filter Features with Bottom Sheet UI ✅
 
 > Complete task sorting and filtering with interactive bottom sheet components for efficient task organization.
 
 - [x] Place sort and filter chips prominently with polished UI
-- [x] Update swipe icons, action texts, and UI elements (dates, status labels, dialogs, buttons, inputs) to ensure consistent theme colors and styling
+- [x] Implement bottom sheets containing radio buttons for option selection
 - [x] Link user selections to app state for dynamic task list updates
 - [x] Maintain accessible font sizes, contrasts, and overall visual consistency for smooth UX
 
-### 🔔 Milestone 9: Notifications (Optional) ⏳
+### 🔔 Milestone 9: Notifications ✅
 
-> Remind users about tasks due today.
+> Remind users daily about tasks due today with user consent, proper permission handling, and customizable reminder time.
 
-- [ ] Add flutter_local_notifications package  
-- [ ] Schedule daily reminders for due tasks  
-- [ ] Open app on notification tap (optional)  
+- [x] Add and configure the flutter_local_notifications and timezone packages for accurate scheduling.
+- [x] Show a one-time opt-in dialog asking users if they want to receive reminders.
+- [x] If consented, request notification permissions  and exact alarm permission (Android SDK 31+).
+- [x] Allow users to select their preferred daily reminder time via a picker.
+- [x] Schedule daily notifications that summarize tasks due today (show count or task titles).
+- [x] Handle permission denial gracefully, falling back without crashes or errors.
+- [x] Encapsulate all notification logic in a dedicated NotificationService class for maintainability and reuse.
 
 ---
 
