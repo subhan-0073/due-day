@@ -18,13 +18,13 @@ class _SortChipState extends State<SortChip> {
   String _getSortLabel(TaskSort sort) {
     switch (sort) {
       case TaskSort.dueDateAsc:
-        return 'Due Date';
+        return 'Closest Deadline First';
       case TaskSort.dueDateDesc:
-        return 'Due Date';
+        return 'Farthest Deadline First';
       case TaskSort.titleAsc:
-        return 'Title A-Z';
+        return 'Title: A-Z';
       case TaskSort.titleDesc:
-        return 'Title Z-A';
+        return 'Title: Z-A';
     }
   }
 

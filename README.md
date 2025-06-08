@@ -154,6 +154,14 @@ Help users stay on top of deadlines by:
 - [x] Handle permission denial gracefully, falling back without crashes or errors.
 - [x] Encapsulate all notification logic in a dedicated NotificationService class for maintainability and reuse.
 
+### 🖼️ Milestone 10: App Icon & Adaptive Icon Setup ✅
+
+> Add proper launcher icons for Android including adaptive icon support with foreground and background layers.
+
+- [x] Added app launcher icons in multiple resolutions (mipmap folders) for legacy and adaptive support.
+- [x] Configured adaptive icons with separate foreground and background layers for modern Android launchers.
+- [x] Included monochrome icon for supported devices and Android versions.
+- [x] Updated AndroidManifest.xml to use the new adaptive icon @mipmap/ic_launcher.
 ---
 
 ## 🧠 Learning Goals
