@@ -21,11 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Box<Task>? box;
   TaskFilter _currentFilter = TaskFilter.all;
   TaskSort _currentSort = TaskSort.dueDateAsc;
-
+  late final Future<void> Function() _boxlistener;
   @override
   void initState() {
     super.initState();
     _openBox();
+    _boxlistener = () async {
+      await _scheduledNotificationsForToday();
+    };
 
     if (NotificationSettingsService.isNotificationEnabled() == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -35,6 +38,12 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       });
     }
+  }
+
+  @override
+  void dispose() {
+    box?.listenable().removeListener(_boxlistener);
+    super.dispose();
   }
 
   Future<void> _scheduledNotificationsForToday() async {
@@ -62,8 +71,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await _scheduledNotificationsForToday();
 
-    box!.listenable().addListener(() async {
-      await _scheduledNotificationsForToday();
+    box!.listenable().addListener(() {
+      _boxlistener();
     });
     setState(() {});
   }
@@ -280,8 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     return SimpleDialog(
                                       backgroundColor: const Color(0xFF1E1E1E),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadiusGeometry.circular(16),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
 
                                       title: const Text(
@@ -368,9 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                      BorderRadiusGeometry.circular(
-                                                        16,
-                                                      ),
+                                                      BorderRadius.circular(16),
                                                 ),
 
                                                 title: const Text(
@@ -445,9 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.teal.shade600,
         foregroundColor: Colors.white,
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const Icon(Icons.add, size: 28),
       ),
     );

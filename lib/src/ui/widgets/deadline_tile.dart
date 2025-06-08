@@ -20,7 +20,6 @@ class DeadlineTile extends StatelessWidget {
     int days = ((absDays % 365) % 30) % 7;
 
     List<String> parts = [];
-
     if (years > 0) parts.add('$years year${years > 1 ? 's' : ''}');
     if (months > 0) parts.add('$months month${months > 1 ? 's' : ''}');
     if (weeks > 0) parts.add('$weeks week${weeks > 1 ? 's' : ''}');
@@ -31,9 +30,7 @@ class DeadlineTile extends StatelessWidget {
   }
 
   Color getTileBackgroundColor() {
-    {
-      if (task.isDone) return Colors.grey.shade800.withAlpha(40);
-    }
+    if (task.isDone) return Colors.grey.shade800.withAlpha(40);
 
     final now = DateTime.now();
     final diffDays = task.dueDate.difference(now).inDays;
