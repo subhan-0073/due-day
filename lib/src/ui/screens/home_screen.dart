@@ -182,7 +182,46 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Due Day"), centerTitle: true),
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A1A1A),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.tealAccent.withAlpha(77),
+                      width: 0.6,
+                    ),
+                  ),
+
+                  child: const Text(
+                    "Made with 💙 by @subhan_0073",
+                    style: TextStyle(
+                      color: Colors.tealAccent,
+                      fontSize: 13,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ),
+
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                behavior: SnackBarBehavior.floating,
+                margin: const EdgeInsets.all(16),
+              ),
+            );
+          },
+          child: const Text("Due Day"),
+        ),
+        centerTitle: true,
+      ),
 
       body: ValueListenableBuilder(
         valueListenable: box!.listenable(),
