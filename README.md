@@ -3,8 +3,14 @@
 **DueDay** is a minimal and focused deadline tracker app to help users manage **tasks, assignments, and goals** by tracking due dates and showing countdowns, built with **Flutter**.
 
 ---
+## 🚀 Download the App!
 
-## 🚀 Project Goal
+Ready to manage your deadlines?
+
+[**➡️ Click here to download the latest release of DueDay!**](https://github.com/subhan-0073/due-day/releases)
+
+---
+## 🎯 Project Goal
 
 Help users stay on top of deadlines by:
 
@@ -21,8 +27,8 @@ Help users stay on top of deadlines by:
 | Layer       | Technology         | Purpose                             |
 |------------ |-------------------|-------------------------------------|
 | Frontend    | Flutter            | UI, routing, state management       |
-| Local Storage | Hive / SharedPreferences | Persist tasks between sessions (optional) |
-| Notifications | flutter_local_notifications | Daily reminders (optional)      |
+| Local Storage | Hive  | Persist tasks between sessions  |
+| Notifications | flutter_local_notifications | Daily reminders       |
 | Versioning  | Git + GitHub       | Source control & collaboration      |
 
 ---
@@ -32,23 +38,23 @@ Help users stay on top of deadlines by:
 ### 🔄 App Flow
 
 1. **User opens the app** and sees a list of deadlines sorted by due date  
-2. **User adds new task** with title and due date (category optional)  
+2. **User adds new task** with title and due date   
 3. **DeadlineTile widgets** display task info and live countdowns  
 4. **User deletes tasks** via long press or swipe  
-5. **Optional:** Tasks persist locally and reminders are scheduled  
+5. **Tasks persist locally and reminders are scheduled**
 
 ### 🔧 Responsibilities
 
 - **Flutter** handles:
   - UI rendering & navigation  
   - Form inputs and validation  
-  - State management using `setState` (initially)  
+  - State management using `setState`   
   - Countdown logic and date formatting  
 
-- **Local Storage** (optional):
-  - Save and retrieve tasks using Hive or SharedPreferences  
+- **Local Storage** :
+  - Save and retrieve tasks using Hive  
 
-- **Notifications** (optional):
+- **Notifications** :
   - Remind users about tasks due today
 
 ---
@@ -56,18 +62,18 @@ Help users stay on top of deadlines by:
 ## ✅ Core Features (MVP)
 
 - Add tasks with **title** and **due date**  
-- View all tasks sorted by **soonest deadline**  
+- Organize and view tasks with **customizable sorting** and **filtering options**
 - Display **live countdowns** and mark overdue tasks in red  
-- Delete tasks via long press or swipe  
-- Clean, minimal user interface  
+- **Delete tasks** via long press
+- Enjoy a **clean**, **minimal interface**  
+- **Receive daily notifications** for tasks due today
+- **Effortless date selection** via an integrated calendar picker.
 
 ---
 
-## ✨ Bonus Features (Optional)
+## ✨ Planned Features (Future Enhancements)
 
-- 🔔 Daily notifications for tasks due today  
-- 📅 Calendar date picker  
-- 🌙 Dark mode toggle  
+- ☀️ Light theme  
 - 📂 Tags or categories  
 - 📌 Pin important tasks  
 
@@ -170,7 +176,7 @@ Help users stay on top of deadlines by:
 - 🗂 Manage app state with `setState`  
 - 🕰 Handle date/time operations in Dart  
 - 🧩 Design reusable widgets (like `DeadlineTile`)  
-- 💾 Optionally integrate persistent local storage  
+- 💾 Integrate persistent local storage  
 - 🔔 Schedule notifications using Flutter plugins  
 - 🔀 Use Git for clean project versioning  
 
@@ -200,10 +206,10 @@ MIT © 2025 Subhan Shaikh ([@subhan-0073](https://github.com/subhan-0073))
 
 ## 📬 Contributions
 
-Contributions are currently limited as this is a learning-focused solo project. Feel free to fork or follow along!
+Contributions are currently limited as this is a **learning-focused solo project**. Feel free to fork or follow along!
 
 ---
 
 ## 📌 Status
 
-**IN DEVELOPMENT** — Follow the milestones for progress updates!
+**READY TO USE** — The app is fully functional, signed, and available for download!
