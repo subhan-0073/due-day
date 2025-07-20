@@ -9,15 +9,52 @@ class DeadlineTile extends StatelessWidget {
 
   String getCountdownText() {
     final now = DateTime.now();
-    Duration difference = task.dueDate.difference(now);
-    int totalDays = difference.inDays;
-    final absDays = totalDays.abs();
-    if (totalDays == 0) return 'Due Today';
-    int years = absDays ~/ 365;
-    int months = (absDays % 365) ~/ 30;
-    int weeks = ((absDays % 365) % 30) ~/ 7;
+    final due = task.dueDate;
+    final diff = due.difference(now);
+    final minutes = diff.inMinutes;
+    final absMinutes = minutes.abs();
 
-    int days = ((absDays % 365) % 30) % 7;
+    if (absMinutes < 24 * 60) {
+      final hours = absMinutes ~/ 60;
+      final remMinutes = absMinutes % 60;
+      String timeString;
+      if (hours > 0 && remMinutes > 0) {
+        timeString =
+            '$hours hour${hours > 1 ? 's' : ''}, $remMinutes minute${remMinutes > 1 ? 's' : ''}';
+      } else if (hours > 0) {
+        timeString = '$hours hour${hours > 1 ? 's' : ''}';
+      } else {
+        timeString = '$remMinutes minute${remMinutes > 1 ? 's' : ''}';
+      }
+      if (minutes > 0) {
+        return 'Due in $timeString';
+      } else if (minutes < 0) {
+        return 'Overdue by $timeString';
+      } else {
+        return 'Due Now';
+      }
+    }
+
+    bool isFuture = due.isAfter(now);
+    DateTime from = isFuture ? now : due;
+    DateTime to = isFuture ? due : now;
+
+    int years = to.year - from.year;
+    int months = to.month - from.month;
+    int days = to.day - from.day;
+
+    if (days < 0) {
+      months -= 1;
+      final prevMonth = DateTime(to.year, to.month, 0);
+      days += prevMonth.day;
+    }
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    int weeks = days ~/ 7;
+    days = days % 7;
 
     List<String> parts = [];
     if (years > 0) parts.add('$years year${years > 1 ? 's' : ''}');
@@ -26,7 +63,11 @@ class DeadlineTile extends StatelessWidget {
     if (days > 0) parts.add('$days day${days > 1 ? 's' : ''}');
 
     final timeString = parts.join(', ');
-    return totalDays > 0 ? 'Due in $timeString' : 'Overdue by $timeString';
+    if (isFuture) {
+      return 'Due in $timeString';
+    } else {
+      return 'Overdue by $timeString';
+    }
   }
 
   Color getTileBackgroundColor() {
@@ -47,15 +88,20 @@ class DeadlineTile extends StatelessWidget {
 
   Color getCountdownColor() {
     final now = DateTime.now();
-    final difference = task.dueDate.difference(now).inDays;
+    final diff = task.dueDate.difference(now);
+    final minutes = diff.inMinutes;
 
-    if (difference == 0) {
+    if (minutes == 0) {
       return Colors.orange.shade300;
+    } else if (minutes > 0) {
+      if (diff.inDays > 0) {
+        return Colors.green.shade300;
+      } else {
+        return Colors.orange.shade300;
+      }
+    } else {
+      return Colors.red.shade300;
     }
-    if (difference > 0) {
-      return Colors.green.shade300;
-    }
-    return Colors.red.shade300;
   }
 
   @override

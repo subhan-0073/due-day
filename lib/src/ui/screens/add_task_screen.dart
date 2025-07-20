@@ -16,6 +16,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _title;
   DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     if (widget.task != null) {
       _titleController.text = widget.task!.title;
       _selectedDate = widget.task!.dueDate;
+      _selectedTime = TimeOfDay.fromDateTime(widget.task!.dueDate);
     }
   }
 
@@ -70,12 +72,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  _selectedDate == null
-                      ? 'No date chosen'
-                      : 'Due: ${DateFormat.yMMMMd().format(_selectedDate!)}',
+                  (_selectedDate == null && _selectedTime == null)
+                      ? 'No date & time chosen'
+                      : 'Due: '
+                            '${_selectedDate != null ? DateFormat.yMMMMd().format(_selectedDate!) : ''}'
+                            '${_selectedTime != null ? ' at ${_selectedTime!.format(context)}' : ''}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: _selectedDate != null
+                    color: (_selectedDate != null && _selectedTime != null)
                         ? Colors.tealAccent.withAlpha(179)
                         : Colors.redAccent.withAlpha(204),
                   ),
@@ -92,13 +96,25 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     lastDate: DateTime(2100),
                   );
                   if (pickedDate != null) {
-                    setState(() {
-                      _selectedDate = pickedDate;
-                    });
+                    if (!mounted) return;
+                    final pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: _selectedTime ?? TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      setState(() {
+                        _selectedDate = pickedDate;
+                        _selectedTime = pickedTime;
+                      });
+                    }
                   }
                 },
-                icon: const Icon(Icons.calendar_today),
-                label: const Text("Pick Due Date"),
+                icon: const Icon(Icons.event),
+                label: Text(
+                  (_selectedDate == null || _selectedTime == null)
+                      ? 'Pick Due Date & Time'
+                      : 'Due: ${DateFormat.yMMMMd().format(_selectedDate!)} at ${_selectedTime!.format(context)}',
+                ),
               ),
 
               const Spacer(),
@@ -108,20 +124,27 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      if (_selectedDate == null) {
+                      if (_selectedDate == null || _selectedTime == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Please pick a due date'),
+                            content: Text('Please pick a due date and time'),
                           ),
                         );
                         return;
                       }
                       _formKey.currentState!.save();
+                      final dueDateTime = DateTime(
+                        _selectedDate!.year,
+                        _selectedDate!.month,
+                        _selectedDate!.day,
+                        _selectedTime!.hour,
+                        _selectedTime!.minute,
+                      );
                       Navigator.pop(
                         context,
                         Task(
                           title: _title!,
-                          dueDate: _selectedDate!,
+                          dueDate: dueDateTime,
                           id: widget.task?.id,
                         ),
                       );
