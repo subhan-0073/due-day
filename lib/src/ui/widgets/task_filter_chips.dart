@@ -51,8 +51,7 @@ class _TaskFilterChipsState extends State<TaskFilterChips> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: TaskFilter.values.map((filter) {
-                        return RadioListTile(
-                          value: filter,
+                        return RadioGroup(
                           groupValue: tempFilter,
                           onChanged: (TaskFilter? newFilter) {
                             if (newFilter != null) {
@@ -61,12 +60,15 @@ class _TaskFilterChipsState extends State<TaskFilterChips> {
                               widget.onFilterChanged(newFilter);
                             }
                           },
-                          title: Text(
-                            _getFilterLabel(filter),
-                            style: const TextStyle(color: Colors.white),
+                          child: RadioListTile(
+                            value: filter,
+                            title: Text(
+                              _getFilterLabel(filter),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            activeColor: Colors.tealAccent,
+                            contentPadding: EdgeInsets.zero,
                           ),
-                          activeColor: Colors.tealAccent,
-                          contentPadding: EdgeInsets.zero,
                         );
                       }).toList(),
                     ),

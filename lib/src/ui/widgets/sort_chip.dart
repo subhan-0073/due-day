@@ -51,8 +51,7 @@ class _SortChipState extends State<SortChip> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: TaskSort.values.map((sort) {
-                        return RadioListTile(
-                          value: sort,
+                        return RadioGroup(
                           groupValue: tempSort,
                           onChanged: (TaskSort? newSort) {
                             if (newSort != null) {
@@ -61,12 +60,15 @@ class _SortChipState extends State<SortChip> {
                               widget.onSortChanged(newSort);
                             }
                           },
-                          title: Text(
-                            _getSortLabel(sort),
-                            style: const TextStyle(color: Colors.white),
+                          child: RadioListTile(
+                            value: sort,
+                            title: Text(
+                              _getSortLabel(sort),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            activeColor: Colors.tealAccent,
+                            contentPadding: EdgeInsets.zero,
                           ),
-                          activeColor: Colors.tealAccent,
-                          contentPadding: EdgeInsets.zero,
                         );
                       }).toList(),
                     ),

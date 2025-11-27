@@ -96,7 +96,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     lastDate: DateTime(2100),
                   );
                   if (pickedDate != null) {
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     final pickedTime = await showTimePicker(
                       context: context,
                       initialTime: _selectedTime ?? TimeOfDay.now(),

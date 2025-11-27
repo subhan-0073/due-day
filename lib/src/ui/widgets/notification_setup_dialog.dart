@@ -67,7 +67,7 @@ class _NotificationSetupDialogState extends State<NotificationSetupDialog> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SwitchListTile(
-            activeColor: Colors.tealAccent.shade400,
+            activeThumbColor: Colors.tealAccent.shade400,
             title: Text(
               "Enable Daily Reminder",
               style: TextStyle(
